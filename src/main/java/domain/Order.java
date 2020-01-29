@@ -60,11 +60,15 @@ public class Order
             totalPrice += (amountPremium * 2);
         }
 
+        else if (weekdayticket) {
+            secondMoTuWeThTicketFree()
+        }
+
 
         return 0;
     }
 
-    private Pair<Integer, Integer> secondTicketFree(int totalAmount, int amountPremium, int totalPrice){
+    private Pair<Integer, Integer> secondTicketFree(int totalAmount, int amountPremium, int totalPrice) {
 
         //If the total amount of tickets is uneven, remove one for the calculation (only 2nd is free)
         //The discount is calculated as a 50% discount on the part of the price with even tickets
@@ -81,6 +85,29 @@ public class Order
         return new Pair<Integer, Integer>(totalPrice, amountPremium);
     }
 
+    private Pair<Integer, Integer> secondMoTuWeThTicketFree(ArrayList<MovieTicket> tickets, int amountPremium, int totalPrice) {
+
+
+        //If the total amount of tickets is uneven, remove one for the calculation (only 2nd is free)
+        //The discount is calculated as a 50% discount on the part of the price with even tickets
+        if ((totalAmount%2) != 0) {
+            totalPrice = ((((totalPrice / totalAmount) * (totalAmount - 1)) / 2)
+                    + ((totalPrice / totalAmount) * 1));
+        }
+
+        //If the amount of premium tickets is uneven, remove one for the calculation (only 2nd is free)
+        if ((amountPremium%2) != 0) {
+            amountPremium = ((amountPremium - 1) / 2) + 1;
+        }
+
+        return new Pair<Integer, Integer>(totalPrice, amountPremium);
+    }
+
+    public void export(TicketExportFormat exportFormat)
+    {
+        // Bases on the string respresentations of the tickets (toString), write
+        // the ticket to a file with naming convention Order_<orderNr>.txt of
+        // Order_<orderNr>.json
     public void export(TicketExportFormat exportFormat) throws IOException {
         if(exportFormat.equals(TicketExportFormat.PLAINTEXT)) {
             BufferedWriter writer = new BufferedWriter(new FileWriter("Order_" + orderNr + ".txt", true));
