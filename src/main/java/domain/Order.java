@@ -1,5 +1,8 @@
 package domain;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class Order
@@ -31,24 +34,26 @@ public class Order
     {
         int totalPrice = 0;
 
-        if(isStudentOrder) {
-            return totalPrice;
+        for (MovieTicket ticket: tickets) {
+            totalPrice += ticket.getPrice();
         }
 
-        for (MovieTicket ticket : tickets) {
-            int price;
-
-            if(ticket.getMovieScreening()ticket.getMovieScreening().getDateAndTime().getDayOfWeek().getValue() <= 5)
-                totalPrice += tic;
-        }
-
-        return 0;
+        return totalPrice;
     }
 
-    public void export(TicketExportFormat exportFormat)
-    {
-        // Bases on the string respresentations of the tickets (toString), write
-        // the ticket to a file with naming convention Order_<orderNr>.txt of
-        // Order_<orderNr>.json
+
+    public void export(TicketExportFormat exportFormat) throws IOException {
+        if(exportFormat.equals(TicketExportFormat.PLAINTEXT)) {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("Order_" + orderNr + ".txt", true));
+
+            writer.write("Order " + orderNr + ": ");
+
+            for (MovieTicket ticket: tickets) {
+                writer.append(ticket.toString());
+                writer.append("\n\n");
+            }
+
+            writer.close();
+        }
     }
 }
