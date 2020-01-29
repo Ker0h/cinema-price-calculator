@@ -1,33 +1,66 @@
 package domain;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 import java.time.LocalDateTime;
 
 public class OrderTest {
 
+    private LocalDateTime wednesday;
+    private LocalDateTime friday;
+    private LocalDateTime saturday;
+
+    private Movie circle;
+    private Movie square;
+    private Movie triangle;
+
+    private MovieScreening circleScreening1;
+    private MovieScreening circleScreening2;
+    private MovieScreening squareScreening1;
+    private MovieScreening squareScreening2;
+    private MovieScreening triangleScreening1;
+    private MovieScreening triangleScreening2;
+
+    private MovieTicket circleTicket;
+    private MovieTicket circleTicketPremium;
+    private MovieTicket squareTicket;
+    private MovieTicket squareTicketPremium;
+    private MovieTicket triangleTicket;
+    private MovieTicket triangleTicketPremium;
+
+    private Order circleOrder;
+    private Order circleOrderStudent;
+    private Order squareOrder;
+    private Order squareOrderStudent;
+    private Order triangleOrder;
+    private Order triangleOrderStudent;
+
+
     @BeforeAll
-    initAll() {
-        //Create a usable LocalDateTime object
-        LocalDateTime wednesday = LocalDateTime.of(2020, 1, 29, 17, 0);
-        LocalDateTime friday = LocalDateTime.of(2020, 1, 31, 17, 0);
-        LocalDateTime saturday = LocalDateTime.of(2020, 2, 1, 17, 0);
+    void initAll() {
 
-        //Test Movies
-        Movie circle = new Movie("The Circle");
-        Movie square = new Movie("The Square");
-        Movie triangle = new Movie("The Triangle");
+        // Create a usable LocalDateTime object
+        wednesday = LocalDateTime.of(2020, 1, 29, 17, 0);
+        friday = LocalDateTime.of(2020, 1, 31, 17, 0);
+        saturday = LocalDateTime.of(2020, 2, 1, 17, 0);
 
-        //Test Screenings
-        MovieScreening circleScreening1 = new MovieScreening(circle, wednesday, 10.0);
-        MovieScreening circleScreening2 = new MovieScreening(circle, wednesday.plusHours(2), 10.0);
+        // Test Movies
+        circle = new Movie("The Circle");
+        square = new Movie("The Square");
+        triangle = new Movie("The Triangle");
 
-        MovieScreening squareScreening1 = new MovieScreening(square, friday, 10.0);
-        MovieScreening squareScreening2 = new MovieScreening(square, friday.plusHours(2), 10.0);
+        // Test Screenings
+        circleScreening1 = new MovieScreening(circle, wednesday, 20.0);
+        circleScreening2 = new MovieScreening(circle, wednesday.plusHours(2), 20.0);
 
-        MovieScreening triangleScreening1 = new MovieScreening(triangle, saturday, 10.0);
-        MovieScreening triangleScreening2 = new MovieScreening(triangle, saturday.plusHours(2), 10.0);
-        
+         squareScreening1 = new MovieScreening(square, friday, 20.0);
+         squareScreening2 = new MovieScreening(square, friday.plusHours(2), 20.0);
+
+        triangleScreening1 = new MovieScreening(triangle, saturday, 20.0);
+         triangleScreening2 = new MovieScreening(triangle, saturday.plusHours(2), 20.0);
+
         circle.addScreening(circleScreening1);
         circle.addScreening(circleScreening2);
 
@@ -38,46 +71,79 @@ public class OrderTest {
         triangle.addScreening(triangleScreening2);
 
         //Test Tickets
-        MovieTicket circleTicket = new MovieTicket(circleScreening1, false, 1, 1);
-        MovieTicket circleTicketPremium = new MovieTicket(circleScreening1, true, 1, 2);
+        circleTicket = new MovieTicket(circleScreening1, false, 1, 1);
+        circleTicketPremium = new MovieTicket(circleScreening1, true, 1, 2);
 
-        MovieTicket squareTicket = new MovieTicket(squareScreening1, false, 1, 1);
-        MovieTicket squareTicketPremium = new MovieTicket(squareScreening1, true, 1, 2);
+        squareTicket = new MovieTicket(squareScreening1, false, 1, 1);
+        squareTicketPremium = new MovieTicket(squareScreening1, true, 1, 2);
 
-        MovieTicket triangleTicket = new MovieTicket(triangleScreening1, false, 1, 1);
-        MovieTicket triangleTicketPremium = new MovieTicket(triangleScreening1, true, 1, 2);
+        triangleTicket = new MovieTicket(triangleScreening1, false, 1, 1);
+        triangleTicketPremium = new MovieTicket(triangleScreening1, true, 1, 2);
 
         //Test Orders
-        Order circleOrder = new Order(1, false);
-        Order circleOrderStudent = new Order(2, true);
+        circleOrder = new Order(1, false);
+        circleOrderStudent = new Order(2, true);
 
-        circleOrder.addSeatReservation(circleTicket);
-        circleOrder.addSeatReservation(circleTicketPremium);
+        squareOrder = new Order(3, false);
+        squareOrderStudent = new Order(4, true);
 
-        circleOrderStudent .addSeatReservation(circleTicket);
-        circleOrderStudent.addSeatReservation(circleTicketPremium);
+        triangleOrder = new Order(5, false);
+        triangleOrderStudent = new Order(6, true);
+    }
 
-        Order squareOrder = new Order(3, false);
-        Order squareOrderStudent = new Order(4, true);
+    // TODO: Change movie prices
 
-        squareOrder.addSeatReservation(squareTicket);
-        squareOrder.addSeatReservation(squareTicketPremium);
-
-        squareOrderStudent .addSeatReservation(squareTicket);
-        squareOrderStudent.addSeatReservation(squareTicketPremium);
-
-        Order triangleOrder = new Order(5, false);
-        Order triangleOrderStudent = new Order(6, true);
-
+    @Test
+    void NonPremiumNonStudentWeekendTickets() {
         triangleOrder.addSeatReservation(triangleTicket);
-        triangleOrder.addSeatReservation(triangleTicketPremium);
 
-        triangleOrderStudent .addSeatReservation(triangleTicket);
-        triangleOrderStudent.addSeatReservation(triangleTicketPremium);
+        Assertions.assertEquals(20.0, triangleOrder.calculatePrice());
     }
 
     @Test
-    OrderContainsOnlyNonPremiumNonStudentWeekendTickets() {
+    void NonPremiumNonStudentWeekdayTicketsWithTwoTickets() {
+        circleOrder.addSeatReservation(circleTicket);
+        circleOrder.addSeatReservation(circleTicket);
+
+        Assertions.assertEquals(10.0, circleOrder.calculatePrice());
+    }
+
+    @Test
+    void NonPremiumNonStudentWeekdayTicketsWithThreeTickets() {
+        circleOrder.addSeatReservation(circleTicket);
+        circleOrder.addSeatReservation(circleTicket);
+        circleOrder.addSeatReservation(circleTicket);
+
+        Assertions.assertEquals(20.0, circleOrder.calculatePrice());
+    }
+
+    @Test
+    void NonPremiumStudentWeekendTickets() {
+
+    }
+
+    @Test
+    void NonPremiumStudentWeekday() {
+
+    }
+
+    @Test
+    void PremiumNonStudentWeekend() {
+
+    }
+
+    @Test
+    void PremiumNonStudentWeekday() {
+
+    }
+
+    @Test
+    void PremiumStudentWeekend() {
+
+    }
+
+    @Test
+    void PremiumStudentWeekday() {
 
     }
 }
