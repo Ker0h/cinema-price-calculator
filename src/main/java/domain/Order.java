@@ -172,8 +172,6 @@ public class Order
         return new Pair<Double, Double>(discountPrice, amountPremium);
     }
 
-    public void export(TicketExportFormat exportFormat)
-    {
         // Bases on the string respresentations of the tickets (toString), write
         // the ticket to a file with naming convention Order_<orderNr>.txt of
         // Order_<orderNr>.json
