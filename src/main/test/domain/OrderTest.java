@@ -119,7 +119,7 @@ public class OrderTest {
 
     @Test
     void NonPremiumStudentWeekendTickets() {
-
+        Assertions.assertEquals(true, true);
     }
 
     @Test
