@@ -8,28 +8,24 @@ import java.io.IOException;
 import java.time.DayOfWeek;
 import java.util.ArrayList;
 
-public class Order
-{
+public class Order {
     private int orderNr;
     private boolean isStudentOrder;
 
     private ArrayList<MovieTicket> tickets;
 
-    public Order(int orderNr, boolean isStudentOrder)
-    {
+    public Order(int orderNr, boolean isStudentOrder) {
         this.orderNr = orderNr;
         this.isStudentOrder = isStudentOrder;
 
         tickets = new ArrayList<MovieTicket>();
     }
 
-    public int getOrderNr()
-    {
+    public int getOrderNr() {
         return orderNr;
     }
 
-    public void addSeatReservation(MovieTicket ticket)
-    {
+    public void addSeatReservation(MovieTicket ticket) {
         tickets.add(ticket);
     }
 
@@ -59,9 +55,7 @@ public class Order
             amountPremium = (int) newVals.getValue();
             //Add the fee for premium tickets
             totalPrice += (amountPremium * 2);
-        }
-
-        else {
+        } else {
             //Handle second ticket free for monday until thursday
             Pair newVals = secondMoTuWeThTicketFree(tickets);
             totalPrice = totalPrice - (double) newVals.getKey();
@@ -72,7 +66,7 @@ public class Order
             Pair wkndVals = weekendTicketsDiscount(tickets);
             if ((int) wkndVals.getKey() != 0) {
                 totalPrice = totalPrice - (double) wkndVals.getKey();
-                totalPrice = totalPrice - ((double) wkndVals.getValue() * 3);
+                amountPremium = ((int) wkndVals.getValue() * 3);
             }
         }
 
@@ -82,17 +76,17 @@ public class Order
 
     private Pair<Double, Integer> secondTicketFree(int totalAmount, int amountPremium, Double totalPrice) {
 
-        //If the total amount of tickets is uneven, remove one for the calculation (only 2nd is free)
-        //The discount is calculated as a 50% discount on the part of the price with even tickets
-        if ((totalAmount%2) != 0) {
+        // If the total amount of tickets is uneven, remove one for the calculation (only 2nd is free)
+        // The discount is calculated as a 50% discount on the part of the price with even tickets
+        if ((totalAmount % 2) != 0) {
             totalPrice = ((((totalPrice / totalAmount) * (totalAmount - 1)) / 2)
-                            + ((totalPrice / totalAmount) * 1));
+                    + ((totalPrice / totalAmount) * 1));
         } else {
             totalPrice = totalPrice / 2;
         }
 
         //If the amount of premium tickets is uneven, remove one for the calculation (only 2nd is free)
-        if ((amountPremium%2) != 0) {
+        if ((amountPremium % 2) != 0) {
             amountPremium = ((amountPremium - 1) / 2) + 1;
         } else {
             amountPremium = amountPremium / 2;
@@ -110,24 +104,24 @@ public class Order
             //Get tickets with the correct day for the discount
             DayOfWeek dayOfWeek = ticket.getMovieScreening().getDateAndTime().getDayOfWeek();
             if (dayOfWeek == DayOfWeek.MONDAY || dayOfWeek == DayOfWeek.TUESDAY || dayOfWeek == DayOfWeek.WEDNESDAY || dayOfWeek == DayOfWeek.THURSDAY) {
-                discountAmount ++;
+                discountAmount++;
                 discountPrice += ticket.getPrice();
             }
             if (ticket.isPremiumTicket()) {
-                amountPremium ++;
+                amountPremium++;
             }
         }
 
         //If the total amount of tickets is uneven, remove one for the calculation (only 2nd is free)
         //The discount is calculated as a 50% discount on the part of the price with even tickets
-        if ((discountAmount%2) != 0) {
+        if ((discountAmount % 2) != 0) {
             discountPrice = (((discountPrice / discountAmount) * (discountAmount - 1)) / 2);
         } else {
             discountPrice = discountPrice / 2;
         }
 
         //If the amount of premium tickets is uneven, remove one for the calculation (only 2nd is free)
-        if ((amountPremium%2) != 0) {
+        if ((amountPremium % 2) != 0) {
             amountPremium = ((amountPremium - 1) / 2);
         } else {
             amountPremium = amountPremium / 2;
@@ -145,16 +139,16 @@ public class Order
             //Get tickets with the correct day for the discount
             DayOfWeek dayOfWeek = ticket.getMovieScreening().getDateAndTime().getDayOfWeek();
             if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-                discountAmount ++;
+                discountAmount++;
                 discountPrice += ticket.getPrice();
             }
             if (ticket.isPremiumTicket()) {
-                amountPremium ++;
+                amountPremium++;
             }
         }
 
         if (discountAmount >= 6) {
-            if ((discountAmount%2) != 0) {
+            if ((discountAmount % 2) != 0) {
                 discountPrice = (((discountPrice / discountAmount) * (discountAmount - 1)) * 0.1);
             } else {
                 discountPrice = discountPrice * 0.1;
@@ -162,7 +156,7 @@ public class Order
 
 
             //If the amount of premium tickets is uneven, remove one for the calculation (only 2nd is free)
-            if ((amountPremium%2) != 0) {
+            if ((amountPremium % 2) != 0) {
                 amountPremium = ((amountPremium - 1) * 0.1);
             } else {
                 amountPremium = amountPremium * 0.1;
@@ -175,18 +169,18 @@ public class Order
         // Bases on the string respresentations of the tickets (toString), write
         // the ticket to a file with naming convention Order_<orderNr>.txt of
         // Order_<orderNr>.json
-    public void export(TicketExportFormat exportFormat) throws IOException {
-        if(exportFormat.equals(TicketExportFormat.PLAINTEXT)) {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("Order_" + orderNr + ".txt", true));
-            
-            writer.write("Order " + orderNr + ": ");
+        public void export (TicketExportFormat exportFormat) throws IOException {
+            if (exportFormat.equals(TicketExportFormat.PLAINTEXT)) {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("Order_" + orderNr + ".txt", true));
 
-            for (MovieTicket ticket: tickets) {
-                writer.append(ticket.toString());
-                writer.append("\n\n");
+                writer.write("Order " + orderNr + ": ");
+
+                for (MovieTicket ticket : tickets) {
+                    writer.append(ticket.toString());
+                    writer.append("\n\n");
+                }
+
+                writer.close();
             }
-
-            writer.close();
         }
     }
-}
